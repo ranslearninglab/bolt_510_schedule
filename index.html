@@ -4,7 +4,687 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ETEC 510 · Course Schedule</title>
-    <link rel="stylesheet" href="style.css" />
+    <style>
+/* ---------- Reset & base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #0f172a; /* slate-900 */
+}
+
+.page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 45%, #eff6ff 100%);
+}
+
+.container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 3rem 1.5rem;
+  }
+}
+
+.icon-sm {
+  display: inline-flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+.icon-sm svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Header ---------- */
+.header {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 640px) {
+  .header {
+    padding: 2.5rem;
+  }
+}
+
+.header-glow {
+  position: absolute;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 9999px;
+  filter: blur(64px);
+}
+
+.header-glow--right {
+  right: -4rem;
+  top: -4rem;
+  background: rgba(191, 219, 254, 0.6);
+}
+
+.header-glow--left {
+  left: -2.5rem;
+  bottom: -5rem;
+  background: rgba(224, 242, 254, 0.5);
+}
+
+.header-content {
+  position: relative;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.brand-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.brand-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #2563eb;
+}
+
+.title {
+  margin: 1rem 0 0;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  max-width: 42rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #475569;
+}
+
+/* ---------- Topical Outline (interactive flow chart) ---------- */
+.summary-line {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ---------- Filter bar ---------- */
+.filter-bar {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 10;
+  margin-top: 2rem;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.filter-chip--all {
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+.filter-chip--all:hover {
+  border-color: #94a3b8;
+}
+
+.filter-chip--all.is-active {
+  border-color: #1e293b;
+  background: #1e293b;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.filter-chip[data-type='topic'] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  box-shadow: inset 0 0 0 1px #bfdbfe;
+}
+.filter-chip[data-type='reading'] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  box-shadow: inset 0 0 0 1px #bfdbfe;
+}
+.filter-chip[data-type='discussion'] {
+  background: #faf5ff;
+  color: #7e22ce;
+  box-shadow: inset 0 0 0 1px #e9d5ff;
+}
+.filter-chip[data-type='task'] {
+  background: #fffbeb;
+  color: #b45309;
+  box-shadow: inset 0 0 0 1px #fde68a;
+}
+.filter-chip[data-type='assignment'] {
+  background: #fff7ed;
+  color: #c2410c;
+  box-shadow: inset 0 0 0 1px #fed7aa;
+}
+
+.filter-chip[data-type='topic'].is-active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.filter-chip[data-type='reading'].is-active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.filter-chip[data-type='discussion'].is-active {
+  background: #9333ea;
+  border-color: #9333ea;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.filter-chip[data-type='task'].is-active {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.filter-chip[data-type='assignment'].is-active {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.filter-hint {
+  margin: 0.625rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.view-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.view-toggle-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 0.125rem;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn.is-active {
+  background: #fff;
+  color: #1d4ed8;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- Module timeline ---------- */
+.timeline {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, #93c5fd, #bfdbfe, transparent);
+}
+
+@media (min-width: 640px) {
+  .timeline-line {
+    left: 26px;
+  }
+}
+
+.timeline-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-row {
+  position: relative;
+  padding-left: 3rem;
+}
+
+@media (min-width: 640px) {
+  .timeline-row {
+    padding-left: 4rem;
+  }
+}
+
+.timeline-badge {
+  position: absolute;
+  left: 0;
+  top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  border: 2px solid #fff;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 0 4px #dbeafe;
+}
+
+.module-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.module-card.is-highlighted {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.module-card.is-dimmed {
+  opacity: 0.5;
+}
+
+.module-card-stripe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  background: linear-gradient(to bottom, #3b82f6, #38bdf8);
+}
+
+.module-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 1.25rem 1.75rem;
+}
+
+.module-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: #eff6ff;
+  color: #2563eb;
+  box-shadow: inset 0 0 0 1px #dbeafe;
+}
+
+.module-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.module-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.module-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.module-badge {
+  border-radius: 9999px;
+  background: #2563eb;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.module-weeks {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.module-title {
+  margin: 0.375rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+.module-items {
+  list-style: none;
+  margin: 0;
+  padding: 0 1.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.module-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(248, 250, 252, 0.7);
+  padding: 0.75rem;
+}
+
+.module-item[data-type='topic'] {
+  box-shadow: inset 0 0 0 1px #bfdbfe;
+}
+.module-item[data-type='reading'] {
+  box-shadow: inset 0 0 0 1px #bfdbfe;
+}
+.module-item[data-type='discussion'] {
+  box-shadow: inset 0 0 0 1px #e9d5ff;
+}
+.module-item[data-type='task'] {
+  box-shadow: inset 0 0 0 1px #fde68a;
+}
+.module-item[data-type='assignment'] {
+  box-shadow: inset 0 0 0 1px #fed7aa;
+}
+
+.module-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+}
+
+.module-item-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.module-item[data-type='topic'] .module-item-icon {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.module-item[data-type='reading'] .module-item-icon {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.module-item[data-type='discussion'] .module-item-icon {
+  background: #faf5ff;
+  color: #7e22ce;
+}
+.module-item[data-type='task'] .module-item-icon {
+  background: #fffbeb;
+  color: #b45309;
+}
+.module-item[data-type='assignment'] .module-item-icon {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.module-item-body {
+  flex: 1;
+}
+
+.module-item-label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #1e293b;
+}
+
+.module-item-description {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #64748b;
+}
+
+.module-item-type {
+  display: inline-block;
+  margin-top: 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.module-item[data-type='topic'] .module-item-type {
+  color: #1d4ed8;
+}
+.module-item[data-type='reading'] .module-item-type {
+  color: #1d4ed8;
+}
+.module-item[data-type='discussion'] .module-item-type {
+  color: #7e22ce;
+}
+.module-item[data-type='task'] .module-item-type {
+  color: #b45309;
+}
+.module-item[data-type='assignment'] .module-item-type {
+  color: #c2410c;
+}
+
+.module-empty {
+  margin: 0;
+  padding: 0 1.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-style: italic;
+  color: #94a3b8;
+}
+
+/* ---------- Tasks & Assignments table ---------- */
+.tasks-wrap {
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tasks-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem 0.75rem;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .tasks-grid {
+    grid-template-columns: auto 1fr auto auto;
+    gap: 0.75rem 1rem;
+    padding: 1.25rem;
+  }
+}
+
+.task-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: #eff6ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  box-shadow: inset 0 0 0 1px #dbeafe;
+}
+
+.task-label {
+  align-self: center;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #1e293b;
+}
+
+.task-chip {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  padding: 0 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.task-chip[data-type='task'] {
+  background: #fffbeb;
+  color: #b45309;
+}
+.task-chip[data-type='assignment'] {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.task-weeks {
+  display: none;
+  align-self: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+@media (min-width: 640px) {
+  .task-weeks {
+    display: block;
+  }
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+    </style>
   </head>
   <body>
     <div class="page">
@@ -66,6 +746,302 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+/* ---------------- Course schedule data ---------------- */
+
+const modules = [
+  {
+    id: 1,
+    title: 'Introduction',
+    weeks: 'Week 1',
+    icon: 'bookOpen',
+    items: [
+      { label: 'Introduction: Media Education for the 21st Century', type: 'topic' },
+      { label: "Let's get to know each other Digital Story", type: 'assignment' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Designing Educational Futures, Now',
+    weeks: 'Week 2',
+    icon: 'compass',
+    items: [
+      {
+        label: 'Design Primer', type: 'topic' },
+      { label: 'Designing Social Futures Now', type: 'topic' },
+      { label: 'The Teacher as Designer', type: 'topic'
+      },
+      { label: 'KeyWord Discussions (Post and Responses)', type: 'assignment' },
+    ],
+  },
+  {
+    id: 3,
+    title: 'Designs for Thinking, Designs for Making',
+    weeks: 'Weeks 3 – 5',
+    icon: 'wrench',
+    items: [
+      {
+        label: 'Situating Design', type: 'topic' },
+      { label: 'Instructionism, Constructivism, and Constructionism', type: 'topic' },
+      { label: 'Culture in Design and Designs for Participatory Competencies', type: 'topic'
+      },
+      { label: 'KeyWord Discussions (Post and Responses)', type: 'assignment' },
+      { label: 'Playing with Design (due end of Week 5)', type: 'assignment' },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Inclusion by Design',
+    weeks: 'Weeks 6 & 7',
+    icon: 'shieldCheck',
+    items: [
+      {
+        label: 'Digital Spaces & The Construction of Race', type: 'topic' },
+      { label: 'Designing for Diverse Populations', type: 'topic' },
+      { label: 'Gender, Difference, and Networked Media', type: 'topic'
+      },
+      { label: 'Keyword Discussion (Post and Responses)', type: 'assignment' },
+      { label: 'Design Project Phase 1 - Proposal (due end of Week 7)', type: 'assignment' },
+      { label: 'Design Project Phase 1 - Peer Feedback (due end of Week 7)', type: 'assignment' },
+    ],
+  },
+];
+
+/* ---------------- Type metadata ---------------- */
+
+const typeMeta = {
+  topic: { label: 'Topic', icon: 'bookOpen' },
+  assignment: { label: 'Assignment', icon: 'fileText' },
+};
+
+const filterOrder = ['topic', 'assignment'];
+const scheduleTypes = ['assignment'];
+
+/* ---------------- Inline icon set (no external deps) ---------------- */
+
+const icons = {
+  graduationCap:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>',
+  layoutGrid:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  listTree:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 6h4M3 12h4M3 18h4"/><path d="M11 6h10M11 12h7M11 18h4"/></svg>',
+  calendarCheck:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><path d="m9 15 2 2 4-4"/></svg>',
+  bookOpen:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 5c2.5-1 5-1 8 0v14c-3-1-5.5-1-8 0V5Z"/><path d="M20 5c-2.5-1-5-1-8 0v14c3-1 5.5-1 8 0V5Z"/></svg>',
+  database:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>',
+  wrench:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.7 2.7-2-2Z"/></svg>',
+  shieldCheck:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  compass:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="m16 8-2 6-6 2 2-6 6-2Z"/></svg>',
+  gauge:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20a8 8 0 1 0-8-8"/><path d="M12 20v-4"/><path d="m8 12 4 0 3-4"/></svg>',
+  map:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 6.5 9 4l6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5V6.5Z"/><path d="M9 4v13.5M15 6.5V20"/></svg>',
+  messageSquare:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>',
+  listChecks:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m3 7 3 3 5-5"/><path d="M13 6h8"/><path d="m3 17 3 3 5-5"/><path d="M13 18h8"/></svg>',
+  fileText:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>',
+};
+
+function iconHtml(name, extraClass) {
+  return `<span class="${extraClass || ''}">${icons[name] || ''}</span>`;
+}
+
+/* ---------------- State ---------------- */
+
+let selectedTypes = new Set(); // empty = "view all"
+let viewMode = 'modules'; // 'modules' | 'tasks'
+
+/* ---------------- Helpers ---------------- */
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderMultilineLabel(str) {
+  return escapeHtml(str).split('\n').join('<br />');
+}
+
+/* ---------------- Rendering: brand icon & static icon slots ---------------- */
+
+function renderStaticIcons() {
+  document.querySelectorAll('[data-icon]').forEach((el) => {
+    const name = el.getAttribute('data-icon');
+    if (icons[name]) el.innerHTML = icons[name];
+  });
+}
+
+/* ---------------- Rendering: filter chips ---------------- */
+
+function renderFilterChips() {
+  const row = document.getElementById('filterRow');
+  row.querySelectorAll('[data-type]').forEach((el) => el.remove());
+
+  filterOrder.forEach((type) => {
+    const meta = typeMeta[type];
+    const btn = document.createElement('button');
+    btn.className = 'filter-chip';
+    btn.dataset.type = type;
+    btn.setAttribute('aria-pressed', selectedTypes.has(type) ? 'true' : 'false');
+    if (selectedTypes.has(type)) btn.classList.add('is-active');
+    btn.innerHTML = `<span class="icon-sm">${icons[meta.icon]}</span>${meta.label}`;
+    btn.addEventListener('click', () => toggleFilter(type));
+    row.appendChild(btn);
+  });
+}
+
+function toggleFilter(type) {
+  if (selectedTypes.has(type)) {
+    selectedTypes.delete(type);
+  } else {
+    selectedTypes.add(type);
+  }
+  syncFilterUI();
+  renderContent();
+}
+
+function setViewAll() {
+  selectedTypes = new Set();
+  syncFilterUI();
+  renderContent();
+}
+
+function syncFilterUI() {
+  const viewAllBtn = document.getElementById('viewAllBtn');
+  const isAll = selectedTypes.size === 0;
+  viewAllBtn.classList.toggle('is-active', isAll);
+  viewAllBtn.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+
+  document.querySelectorAll('.filter-chip[data-type]').forEach((btn) => {
+    const active = selectedTypes.has(btn.dataset.type);
+    btn.classList.toggle('is-active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+}
+
+/* ---------------- Rendering: module timeline ---------------- */
+
+function renderModuleCard(module) {
+  const activeFilter = selectedTypes.size > 0 ? selectedTypes : null;
+  const visibleItems = activeFilter ? module.items.filter((i) => activeFilter.has(i.type)) : module.items;
+  const hasVisible = visibleItems.length > 0;
+
+  const itemsHtml = hasVisible
+    ? `<ul class="module-items">
+        ${visibleItems
+          .map(
+            (item) => `
+          <li class="module-item" data-type="${item.type}">
+            <span class="module-item-icon">${icons[typeMeta[item.type].icon]}</span>
+            <div class="module-item-body">
+              <p class="module-item-label">${renderMultilineLabel(item.label)}</p>
+              ${item.description ? `<p class="module-item-description">${escapeHtml(item.description)}</p>` : ''}
+              <span class="module-item-type">${typeMeta[item.type].label}</span>
+            </div>
+          </li>`,
+          )
+          .join('')}
+      </ul>`
+    : `<p class="module-empty">No items match the selected filters.</p>`;
+
+  return `
+    <div class="timeline-row">
+      <div class="timeline-badge">${module.id}</div>
+      <article class="module-card ${hasVisible ? 'is-highlighted' : 'is-dimmed'}">
+        <div class="module-card-stripe"></div>
+        <div class="module-card-head">
+          <div class="module-icon">${icons[module.icon]}</div>
+          <div class="module-meta">
+            <div class="module-meta-row">
+              <span class="module-badge">Module ${module.id}</span>
+              <span class="module-weeks">${module.weeks}</span>
+            </div>
+            <h3 class="module-title">${escapeHtml(module.title)}</h3>
+          </div>
+        </div>
+        ${itemsHtml}
+      </article>
+    </div>`;
+}
+
+function renderModulesView() {
+  return `
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-items">
+        ${modules.map(renderModuleCard).join('')}
+      </div>
+    </div>`;
+}
+
+/* ---------------- Rendering: tasks & assignments table ---------------- */
+
+function renderTasksView() {
+  const rows = [];
+  modules.forEach((m) => {
+    m.items.filter((i) => scheduleTypes.includes(i.type)).forEach((item) => rows.push({ module: m, item }));
+  });
+
+  return `
+    <div class="tasks-wrap">
+      <div class="tasks-grid">
+        ${rows
+          .map(
+            (row) => `
+          <span class="task-num">${row.module.id}</span>
+          <p class="task-label">${escapeHtml(row.item.label)}</p>
+          <span class="task-chip" data-type="${row.item.type}">
+            <span class="icon-sm">${icons[typeMeta[row.item.type].icon]}</span>
+            ${typeMeta[row.item.type].label}
+          </span>
+          <span class="task-weeks">${row.module.weeks}</span>`,
+          )
+          .join('')}
+      </div>
+    </div>`;
+}
+
+/* ---------------- Main render ---------------- */
+
+function renderContent() {
+  const content = document.getElementById('content');
+  content.innerHTML = viewMode === 'tasks' ? renderTasksView() : renderModulesView();
+}
+
+function renderSummary() {
+  document.getElementById('summaryText').textContent =
+    `${modules.length} modules · 13 weeks · 4 graded & choice-based tasks`;
+}
+
+function setViewMode(mode) {
+  viewMode = mode;
+  document.getElementById('viewModulesBtn').classList.toggle('is-active', mode === 'modules');
+  document.getElementById('viewModulesBtn').setAttribute('aria-pressed', mode === 'modules' ? 'true' : 'false');
+  document.getElementById('viewTasksBtn').classList.toggle('is-active', mode === 'tasks');
+  document.getElementById('viewTasksBtn').setAttribute('aria-pressed', mode === 'tasks' ? 'true' : 'false');
+  renderContent();
+}
+
+/* ---------------- Init ---------------- */
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStaticIcons();
+  renderSummary();
+  renderFilterChips();
+  renderContent();
+
+  document.getElementById('viewAllBtn').addEventListener('click', setViewAll);
+  document.getElementById('viewModulesBtn').addEventListener('click', () => setViewMode('modules'));
+  document.getElementById('viewTasksBtn').addEventListener('click', () => setViewMode('tasks'));
+});
+
+    </script>
   </body>
 </html>
