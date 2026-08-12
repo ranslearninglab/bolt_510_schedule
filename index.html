@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ETEC 510 · Course Schedule</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="container">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-glow header-glow--right"></div>
+          <div class="header-glow header-glow--left"></div>
+          <div class="header-content">
+            <div class="brand">
+              <div class="brand-icon" data-icon="graduationCap"></div>
+              <span class="brand-label">Visual Syllabus</span>
+            </div>
+            <h1 class="title">ETEC 510: The Design of Technology-supported Learning Environments</h1>
+            <p class="subtitle">
+              A step-by-step guide through the modules, topics, and assignments for this course.
+            </p>
+
+            <div class="summary-line">
+              <span id="summaryText"></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Filter bar (sticky) -->
+        <section class="filter-bar" aria-label="Filter modules by item type">
+          <div class="filter-row" id="filterRow">
+            <span class="filter-label">
+              <span class="icon-sm" data-icon="layoutGrid"></span>
+              Filter view
+            </span>
+            <button class="filter-chip filter-chip--all is-active" id="viewAllBtn" aria-pressed="true">
+              <span class="icon-sm" data-icon="layoutGrid"></span>
+              View All
+            </button>
+            <!-- type filter chips injected by script.js -->
+          </div>
+          <p class="filter-hint">Select one or more learning activity categories to filter the view.</p>
+
+          <div class="view-toggle-row">
+            <span class="view-toggle-label">View schedule by</span>
+            <div class="view-toggle">
+              <button class="view-toggle-btn is-active" id="viewModulesBtn" aria-pressed="true">
+                <span class="icon-sm" data-icon="listTree"></span>
+                Modules
+              </button>
+              <button class="view-toggle-btn" id="viewTasksBtn" aria-pressed="false">
+                <span class="icon-sm" data-icon="calendarCheck"></span>
+                Assignments
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main content: module timeline or tasks table -->
+        <main id="content"></main>
+
+        <footer class="footer">ETEC 510 &middot; Visual Syllabus</footer>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
